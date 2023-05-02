@@ -1,0 +1,199 @@
+﻿@model IEnumerable<Product>
+
+@using Newtonsoft.Json.Linq
+
+@{
+    int counter = 1;
+    JArray jsonArray = new JArray();
+    foreach (var product in Model)
+    {
+        JObject jsonObject = new JObject();
+        jsonObject.Add("Id", product.Id);
+        jsonObject.Add("Name", product.Name);
+        jsonObject.Add("Price", product.Price);
+        jsonObject.Add("Unit", product.Unit);
+        jsonObject.Add("Brand", product.Brand);
+        jsonObject.Add("Image", product.Image);
+        jsonObject.Add("CreatedDate", product.CreatedDate);
+        jsonObject.Add("Status", product.Status);
+        
+        JObject categoryObject = new JObject();
+        categoryObject.Add("Id", product.Category.Id);
+        categoryObject.Add("Name", product.Category.Name);
+        jsonObject.Add("Category", categoryObject);
+        
+        jsonArray.Add(jsonObject);
+        
+    }
+}
+
+<style>
+    .out-of-stock {
+        background-color: red;
+    }
+    
+    .in-stock {
+        background-color: green;
+    }
+</style>
+<br />
+<script>
+
+
+
+</script>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Product List</h4>
+            </div>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addProducts">Add Product</button>
+        </div>
+    </div>
+</div>
+<div class="col-6">
+   
+
+</div>
+
+ <div class="row">
+  <div class="col-lg-12">
+<div class="table-responsive rounded mb-3">
+
+     @if (Model.Count() > 0)
+    {
+        <table class="data-tables table mb-0 tbl-server-info tables">
+            <thead class="bg-white text-uppercase">
+                <tr class="ligth ligth-data">
+            
+            <th>No</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Unit</th>
+            <th>Brand</th>
+            <th>Created Date</th>
+            <th>Status</th>
+            <th>Category</th>
+            <th>Action</th>
+               
+            </tr>
+            </thead>
+                <tbody class="ligth-body">
+            @foreach (var product in jsonArray)
+        {
+            <tr>
+                <td>@counter</td>
+                <td>@product["Name"]</td>
+                <td>@product["Price"]</td>
+                <td>@product["Unit"]</td>
+                <td>@product["Brand"]</td>
+                <td>@product["CreatedDate"]</td>
+                <td class="@((int)product["Status"] == 0 ? "out-of-stock" : "in-stock")">@((int)product["Status"] == 0 ? "Out of Stock" : "In Stock")</td>
+                <td>@product["Category"]["Name"]</td>
+
+        
+                      <td>
+          <div class="d-flex align-items-center list-action">
+         <button class="badge bg-success mr-2 editProduct" theid=@product["Id"] data-toggle="modal" data-target="#editProducts"><i class="ri-eye-line mr-0"></i></button>
+         <button class="badge bg-warning mr-2 deleteProduct" theid=@product["Id"] ><i class="fa fa-times"></i></button>
+          </div>
+                    </td>     
+                        </tr>
+                        counter++;
+            }
+            </tbody>
+            </table>
+    }
+    </div>
+        <!-- ADD Modal -->
+                <div class="modal fade bd-example-modal-lg" id="addProducts" tabindex="-1" role="dialog" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Product</h5><button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                    <div class="modal-body">
+                        <form class="form formet">
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="newname">Product Name</label><input class="form-control form__input" name="newname" id="newname" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="newprice">Price</label><input class="form-control form__input" name="newprice" id="newprice" type="number" required="required" /></div>
+                            <div class="form__group col-md-12 form-group">
+    <label class="form__label" for="newcategory">Category</label>
+<select class="form-control form__input" name="newcategory" id="newcategory" required="required">
+    <option value="">Select a category</option>
+    <option value="f9caff08-63dc-4da5-904c-9b6c3ca09e0f">Dairy and Eggs</option>
+    <option value="d4ae1d33-3d95-45e0-ae12-abec9d162e87">Snacks</option>
+    <option value="d0257652-49e1-44b2-b5f9-ae72b6a6eaad">Beverages</option>
+    <option value="aee032d2-eca7-4fe5-b9e6-ec7830b8874e">Personal Care and Household Items</option>
+    <option value="774d999b-e40b-4fa1-bfa8-f6539eaf6bdf">Canned Goods</option>
+</select>
+
+</div>
+
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="newunit">Unit</label><input class="form-control form__input" id="newunit" name="newunit" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="newbrand">Brand</label><input class="form-control form__input" id="newbrand" name="newbrand" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="newimage">Image</label><input class="form-control form__input" name="newimage" id="newimage" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="newcreateddate">Created Date</label><input class="form-control form__input" name="newcreateddate" id="newcreateddate" type="text" required="required" value="1/15/2021" /></div>
+<div class="form__group col-md-12 form-group">
+    <label class="form__label" for="newstatus">Status</label>
+    <select class="form-control form__input" name="newstatus" id="newstatus" required="required" disabled>
+        <option value="1" selected>In stock</option>
+        <option value="0">Out of stock</option>
+    </select>
+</div>
+
+                            <div class="form__group col-md-12 form-group"><button class="btn btn-primary btn--green" onclick="insertProduct();">Add Product</button></div>
+                          
+                        </form>
+                    </div>
+                    </div>
+                    </div>
+               
+    </div>
+        <!-- Edit Modal -->
+        <div class="modal fade bd-example-modal-lg" id="editProducts" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Product</h5><button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form formet">
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="productID">Product ID</label><input class="form-control form__input" id="productID" name="productID" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="name">Product Name</label><input class="form-control form__input" name="name" id="name" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="price">Price</label><input class="form-control form__input" name="price" id="price" type="text" required="required" /></div>
+<div class="form__group col-md-12 form-group">
+    <label class="form__label" for="category">Category</label>
+<select class="form-control form__input" name="category" id="category" required="required">
+    <option value="">Select a category</option>
+    <option value="f9caff08-63dc-4da5-904c-9b6c3ca09e0f">Dairy and Eggs</option>
+    <option value="d4ae1d33-3d95-45e0-ae12-abec9d162e87">Snacks</option>
+    <option value="d0257652-49e1-44b2-b5f9-ae72b6a6eaad">Beverages</option>
+    <option value="aee032d2-eca7-4fe5-b9e6-ec7830b8874e">Personal Care and Household Items</option>
+    <option value="774d999b-e40b-4fa1-bfa8-f6539eaf6bdf">Canned Goods</option>
+</select>
+
+</div>
+
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="unit">Unit</label><input class="form-control form__input" id="unit" name="unit" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="brand">Brand</label><input class="form-control form__input" name="brand" id="brand" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="image">Image</label><input class="form-control form__input" name="image" id="image" type="text" required="required" /></div>
+                            <div class="form__group col-md-12 form-group"><label class="form__label" for="createddate">Created Date</label><input class="form-control form__input" name="createddate" id="createddate" type="text" required="required" /></div>
+<div class="form__group col-md-12 form-group">
+    <label class="form__label" for="status">Status</label>
+    <select class="form-control form__input" name="status" id="status" required="required">
+        <option value="">Select an option</option>
+        <option value="1">In stock</option>
+        <option value="0">Out of stock</option>
+    </select>
+</div>
+
+                            <div class="form__group col-md-12 form-group"><button class="btn btn-primary btn--green" onclick="updateProduct();">Update Product</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div></div>
+
